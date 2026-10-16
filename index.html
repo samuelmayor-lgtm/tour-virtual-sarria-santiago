@@ -93,6 +93,10 @@
 
         <div class="panel__group">
           <h3 class="panel__label">Tipo de mapa</h3>
+          <p class="panel__note" id="fallbackNote" hidden>
+            <strong>Mapas de respaldo en uso.</strong> Mapbox no está respondiendo con este token,
+            así que el tour ha cambiado solo a mapas alternativos para no quedarse sin mapa.
+          </p>
           <p class="panel__note" id="noTokenNote" hidden>
             <strong>Mapbox desactivado.</strong> Pega tu token público (empieza por «pk.») en <code>js/config.js</code>
             o añade <code>?token=pk.…</code> a la URL. Mientras tanto se usan mapas de prueba.

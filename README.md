@@ -54,13 +54,42 @@ Todo lo ajustable está en [`js/config.js`](js/config.js):
 ### Token de Mapbox
 
 El modo principal es **Mapbox GL JS 3.9.4**. Si `mapboxToken` no empieza por `pk.`,
-la aplicación cae automáticamente a **MapLibre GL 5.6.0** con mapas de prueba
+la aplicación arranca directamente con **MapLibre GL 5.6.0** y mapas alternativos
 (Esri, OpenTopoMap, CARTO y relieve Terrarium de AWS).
 
 > [!IMPORTANT]
 > El token es público y queda visible en el código, como corresponde a un token `pk.`.
 > **Restríngelo por URL** en [account.mapbox.com → Tokens](https://account.mapbox.com/access-tokens/)
 > añadiendo la URL de GitHub Pages, o cualquiera podrá consumir tu cuota.
+
+### Caída automática a los mapas de respaldo
+
+El tour **nunca se queda sin mapa**. Si Mapbox responde `401` (token inválido),
+`403` (la restricción de URL no cuadra) o `429` (límite de peticiones), o si el estilo
+no llega a cargar en 12 segundos, el sitio cambia solo a MapLibre **conservando la etapa,
+el progreso y la reproducción**, y lo avisa en el panel de ajustes.
+
+Sin esto, un token caducado dejaba el tour corriendo sobre un fondo gris vacío.
+
+### Control del gasto
+
+Mapbox **no permite poner un tope de gasto** y su consumo **no se puede consultar por API**
+(la página de estadísticas tarda hasta 24 h). Superar el plan gratuito no corta el servicio:
+se factura.
+
+| Cargas al mes | Precio |
+|---|---|
+| Hasta 50.000 | Gratis |
+| 50.001 – 100.000 | 5 $ / 1.000 |
+| 100.001 – 200.000 | 4 $ / 1.000 |
+
+Una carga es **una inicialización del mapa**, con sesión de hasta 12 h: equivale a una visita.
+Moverse, hacer zoom, cambiar de tipo de mapa o repetir etapas **no suma**.
+
+Para no pasar del plan gratuito, configura **avisos de consumo** en
+[account.mapbox.com → Statistics](https://account.mapbox.com/) con umbrales al 50 %, 80 % y 90 %.
+Cuando salte el aviso, basta con vaciar `mapboxToken` en `js/config.js` y hacer commit:
+el sitio pasa a los mapas de respaldo hasta el mes siguiente.
 
 ## Estructura
 

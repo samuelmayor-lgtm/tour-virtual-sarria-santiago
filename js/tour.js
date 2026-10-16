@@ -49,6 +49,7 @@ class Tour {
       mapBtn: $('mapBtn'), mapName: $('mapName'), panel: $('panel'), panelClose: $('panelClose'),
       camFollow: $('camFollow'), camStage: $('camStage'),
       mapList: $('mapList'), noTokenNote: $('noTokenNote'), mbNote: $('mbNote'),
+      fallbackNote: $('fallbackNote'),
       poi: $('poi'), poiImg: $('poiImg'), poiKm: $('poiKm'), poiTitle: $('poiTitle'), poiText: $('poiText'),
       playBtn: $('playBtn'), iconPlay: $('iconPlay'), iconPause: $('iconPause'),
       kmDone: $('kmDone'), kmTotal: $('kmTotal'), upDone: $('upDone'), upTotal: $('upTotal'),
@@ -73,6 +74,8 @@ class Tour {
     this.raf = 0;
     this.poiShown = -2;  // -1 = ninguno; -2 fuerza el primer pintado
     this.preloaded = {};
+    this.fellBack = false;   // true tras caer de Mapbox a MapLibre
+    this.styleOk = false;
 
     this.bindUI();
     this.renderDays();
@@ -85,7 +88,9 @@ class Tour {
   /* ---------- token / librería ---------- */
 
   token() { return String(CONFIG.mapboxToken || '').trim(); }
-  useMB() { return this.token().startsWith('pk.'); }
+
+  /** Mapbox solo si hay token `pk.` y no nos ha echado ya (ver fallBack). */
+  useMB() { return this.token().startsWith('pk.') && !this.fellBack; }
   mbStyle() { return MB_MAPS.find(m => m.id === this.state.mbMapId) || MB_MAPS[0]; }
   zoom() { return CONFIG.followZoom; }
   isMobile() { return this.el.stage.clientWidth <= 640; }
@@ -182,7 +187,8 @@ class Tour {
     const mb = this.useMB();
     const list = mb ? MB_MAPS : MAPS;
     const cur = mb ? this.state.mbMapId : this.state.mapId;
-    this.el.noTokenNote.hidden = mb;
+    // Tras un relevo sí hay token: el aviso correcto es el de respaldo, no «pega tu token».
+    this.el.noTokenNote.hidden = mb || this.fellBack;
     this.el.mbNote.hidden = !mb;
     this.el.mapName.textContent = (list.find(m => m.id === cur) || list[0]).name;
 
@@ -244,6 +250,66 @@ class Tour {
     });
   }
 
+  /* ---------- fallos de Mapbox y relevo a MapLibre ---------- */
+
+  /** 401 token inválido · 403 restricción de URL · 429 límite de peticiones.
+     Todo lo demás (una tesela suelta que falla) no justifica cambiar de motor. */
+  onMapboxError(e) {
+    const err = e && e.error;
+    const status = err && err.status;
+    const msg = (err && err.message) || '';
+    console.warn('Mapbox:', msg);
+    if (status === 401 || status === 403 || status === 429 || /access token/i.test(msg)) {
+      this.fallBack('Mapbox respondió ' + (status || 'con un error de token'));
+    }
+  }
+
+  /** Cambia a MapLibre en caliente, conservando etapa, progreso y reproducción. */
+  fallBack(reason) {
+    if (this.fellBack || !this.useMB()) return;
+    console.warn('Tour: se usan los mapas de respaldo (' + reason + ').');
+    this.fellBack = true;
+
+    const resume = { progress: this.progress, playing: this.state.playing };
+    this.teardown();
+    this.state.playing = false;
+    this.setPlayIcon(false);
+    this.resume = resume;
+
+    this.el.fallbackNote.hidden = false;
+    this.renderMapList();
+    this.boot();
+  }
+
+  /** Desmonta el mapa actual sin tocar el estado del tour. */
+  teardown() {
+    cancelAnimationFrame(this.raf);
+    this.cancelAutoplay();
+    clearTimeout(this.styleT);
+    this.styleOk = false;
+    if (this.walkerEl) { this.walkerEl.remove(); this.walkerEl = null; }
+    this.wp = null;
+    this.labels = [];
+    this.walker = null;
+    this.camC = null;
+    this.camE = null;
+    this.teC = null;
+    if (this.map) { this.map.remove(); this.map = null; }
+  }
+
+  /** Recoloca el tour donde estaba tras un relevo de motor. */
+  applyResume() {
+    const r = this.resume;
+    this.resume = null;
+    if (!r) return;
+    const s = this.state.stage, S = DATA[s];
+    this.progress = r.progress;
+    this.setWalker(this.at(s, this.progress * S.total).p);
+    this.setDone(this.progress);
+    this.paintUI();
+    if (r.playing) this.play();
+  }
+
   /* ---------- mapa ---------- */
 
   initMap() {
@@ -264,7 +330,12 @@ class Tour {
       map = this.map = new ml.Map({
         ...common, maxTileCacheSize: 1200, projection: 'mercator', style: this.mbStyle().style
       });
-      map.on('error', e => console.warn('Mapbox:', e && e.error && e.error.message));
+      map.on('error', e => this.onMapboxError(e));
+      // Red de seguridad: si el estilo no llega a cargar, algo va mal con la
+      // cuenta o la red y nadie nos lo va a decir. Mejor mapas de respaldo
+      // que un rectángulo gris.
+      clearTimeout(this.styleT);
+      this.styleT = setTimeout(() => { if (!this.styleOk) this.fallBack('el mapa no respondió'); }, 12000);
     } else {
       map = this.map = new ml.Map({
         ...common, maxTileCacheSize: 800, centerClampedToGround: false,
@@ -296,12 +367,18 @@ class Tour {
     this.h = this.el.map.clientHeight || 800;
     this.applyPadding();
 
-    map.on('style.load', () => this.addOverlays());
+    map.on('style.load', () => { this.styleOk = true; clearTimeout(this.styleT); this.addOverlays(); });
     map.on('load', () => {
+      this.styleOk = true;
+      clearTimeout(this.styleT);
       this.addOverlays();
       if (!this.mb) this.addMapLibreMarkers(ml, map);
-      if (this.state.started) this.goStage(this.state.stage, false);
-      else this.overviewSpin();
+      if (this.state.started) {
+        this.goStage(this.state.stage, false);
+        this.applyResume();          // tras un relevo, vuelve donde estaba
+      } else {
+        this.overviewSpin();
+      }
     });
   }
 
