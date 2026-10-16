@@ -618,7 +618,30 @@ a:hover { color: var(--graphite); }
   .header__eyebrow-long { display: none; }
   .header__route { font-size: 17px; }
 
-  .map-btn { top: 88px; right: 12px; padding: 10px 16px; }
+  /* El botón de mapa pasa a icono y ocupa la esquina de la concha, al lado
+     del bloque del día. La concha vuelve en cuanto se sale del tour. */
+  .started .concha { display: none; }
+
+  .map-btn {
+    top: 12px;
+    right: 12px;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    gap: 0;
+    justify-content: center;
+  }
+  /* Oculto a la vista, no para el lector de pantalla: sin esto el botón
+     se quedaría sin nombre accesible. */
+  .map-btn__text {
+    position: absolute;
+    width: 1px; height: 1px;
+    margin: -1px; padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
 
   .panel {
     top: auto;

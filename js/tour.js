@@ -692,6 +692,7 @@ class Tour {
 
     this.el.intro.hidden = true;
     this.el.tour.hidden = false;
+    this.el.stage.classList.add('started');   // en móvil libera la esquina de la concha
     this.el.end.hidden = true;
     this.setPlayIcon(false);
     this.paintStageInfo();
