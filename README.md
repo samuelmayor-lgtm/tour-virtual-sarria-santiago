@@ -86,10 +86,23 @@ se factura.
 Una carga es **una inicialización del mapa**, con sesión de hasta 12 h: equivale a una visita.
 Moverse, hacer zoom, cambiar de tipo de mapa o repetir etapas **no suma**.
 
-Para no pasar del plan gratuito, configura **avisos de consumo** en
-[account.mapbox.com → Statistics](https://account.mapbox.com/) con umbrales al 50 %, 80 % y 90 %.
-Cuando salte el aviso, basta con vaciar `mapboxToken` en `js/config.js` y hacer commit:
-el sitio pasa a los mapas de respaldo hasta el mes siguiente.
+**Estrategia elegida: cuenta sin método de pago.** Los avisos de consumo por umbral
+exigen tener una tarjeta registrada, así que no se usan. En su lugar:
+
+- **El token está restringido por URL**, que es la protección real: con tráfico orgánico
+  no se llega a 50.000 visitas únicas al mes; la forma realista de superarlo es que alguien
+  copie el token y lo use en otra web.
+- **Sin tarjeta no hay cobro posible.** Si se superase el plan gratuito, la factura no se
+  podría procesar y Mapbox [desactivaría la cuenta](https://docs.mapbox.com/help/troubleshooting/blank-tiles/):
+  las peticiones empezarían a fallar y **el sitio caería solo a los mapas de respaldo**.
+- Revisar la página **Statistics** de la cuenta de vez en cuando (visible sin tarjeta,
+  con hasta 24 h de retraso).
+
+> [!WARNING]
+> Esto es un cortafuegos, no un tope exacto. Mapbox sirve durante todo el periodo y solo
+> desactiva cuando falla el cobro, al cerrar la factura: el exceso se acumula igual y queda
+> como factura *Past Due* en la cuenta. La exposición máxima es el tráfico de un periodo,
+> y la desactivación afecta a toda la cuenta de Mapbox, no solo a este sitio.
 
 ## Estructura
 
