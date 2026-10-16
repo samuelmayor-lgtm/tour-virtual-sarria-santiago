@@ -56,6 +56,7 @@ class Tour {
       profArea: $('profArea'), profAreaDone: $('profAreaDone'), profLine: $('profLine'),
       clipRect: $('clipRect'), profCursor: $('profCursor'), eleBubble: $('eleBubble'), eleNow: $('eleNow'),
       speedBtn: $('speedBtn'), speedVal: $('speedVal'), days: $('days'),
+      bar: document.querySelector('.bar'),
       end: $('end'), endDay: $('endDay'), endKm: $('endKm'), endTitle: $('endTitle'),
       endText: $('endText'), endBtn: $('endBtn'),
       startBtn: $('startBtn')
@@ -153,6 +154,20 @@ class Tour {
       }
     });
     this.ro.observe(this.el.stage);
+
+    // La ficha de POI se ancla sobre la barra, cuya altura cambia con el ancho
+    // (la fila se parte) y con el idioma. Se publica como variable CSS en vez
+    // de fijar un número que quedaría desfasado.
+    this.barRo = new ResizeObserver(() => this.measureBar());
+    this.barRo.observe(this.el.bar);
+  }
+
+  /** Publica la altura de la barra para que la ficha de POI se ancle sobre ella.
+     El ResizeObserver no dispara al pasar la barra de oculta a visible, así que
+     goStage también llama aquí: con 0 px la ficha se solaparía con la barra. */
+  measureBar() {
+    const h = this.el.bar.offsetHeight;
+    if (h > 0) this.el.stage.style.setProperty('--bar-h', h + 'px');
   }
 
   applyPadding() {
@@ -693,6 +708,7 @@ class Tour {
     this.el.intro.hidden = true;
     this.el.tour.hidden = false;
     this.el.stage.classList.add('started');   // en móvil libera la esquina de la concha
+    this.measureBar();                        // la barra ya tiene caja: ahora mide
     this.el.end.hidden = true;
     this.setPlayIcon(false);
     this.paintStageInfo();

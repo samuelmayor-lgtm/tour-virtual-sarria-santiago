@@ -655,15 +655,30 @@ a:hover { color: var(--graphite); }
     padding: 20px;
   }
 
+  /* Anclada sobre la barra, no flotando a media altura: así el mapa queda en
+     una sola franja continua y la ficha no puede solaparse con la barra.
+     --bar-h la publica tour.js, porque la barra cambia de alto según el ancho. */
   .poi {
-    top: 144px;
+    top: auto;
+    bottom: calc(var(--bar-h, 240px) + 46px);
     left: 12px;
     right: 12px;
     width: auto;
     max-width: none;
     display: flex;
   }
-  .poi__img { width: 104px; height: auto; min-height: 112px; flex: none; align-self: stretch; }
+  .poi__img { width: 84px; height: auto; min-height: 96px; flex: none; align-self: stretch; }
+  .poi__body { padding: 12px 14px; gap: 5px; }
+  .poi__eyebrow { font-size: 11px; }
+  .poi__title { font-size: 18px; }
+  .poi__text {
+    font-size: 14px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
 
   .bar {
     left: 12px;
@@ -692,6 +707,17 @@ a:hover { color: var(--graphite); }
   .end { padding-bottom: 180px; }
   .end__card { padding: 24px; }
   .end__title { font-size: var(--text-h3); }
+}
+
+/* Pantallas estrechas (iPhone SE y similares): sin estos ajustes el contador
+   «10,7 km de 22,2» y la línea de desnivel parten en dos líneas. */
+@container stage (max-width: 400px) {
+  .play { width: 56px; height: 56px; }
+  .stats__km-big { font-size: 24px; }
+  .stats__km-total { font-size: 14px; }
+  .stats__up { font-size: 13px; }
+  .speed { padding: 10px 14px; font-size: 14px; }
+  .bar { padding: 14px; }
 }
 
 /* Pantallas realmente estrechas: el título no debe desbordar */

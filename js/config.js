@@ -15,8 +15,8 @@ export const CONFIG = {
   /* Reproducción */
   stageSeconds: 60,   // 20–120 · duración de una etapa a velocidad 1x
 
-  /* Enlace del CTA final. Vacío = botón sin enlace. */
-  bookingUrl: '',
+  /* Enlace del CTA final «Reserva tu Camino». Vacío = botón sin enlace. */
+  bookingUrl: 'https://santiagoways.com/es/camino-de-santiago/camino-frances/de-sarria-a-santiago/',
 
   /* Fotos de los puntos de interés. 'local' usa assets/pois/ (repo autónomo),
      'remote' las carga de santiagoways.com. */

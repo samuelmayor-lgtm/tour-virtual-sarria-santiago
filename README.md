@@ -148,7 +148,6 @@ restricciones del token de Mapbox**.
 ## Pendiente
 
 - [ ] Sustituir los waypoints aproximados por **GPX reales** de cada etapa.
-- [ ] Enlazar el CTA final («Reserva tu Camino») rellenando `bookingUrl`.
 
 ## Licencia y créditos
 
