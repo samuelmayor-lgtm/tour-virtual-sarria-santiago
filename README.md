@@ -59,13 +59,13 @@ la aplicación arranca directamente con **MapLibre GL 5.6.0** y mapas alternativ
 
 > [!IMPORTANT]
 > El token es público y queda visible en el código, como corresponde a un token `pk.`.
-> **Restríngelo por URL** en [account.mapbox.com → Tokens](https://account.mapbox.com/access-tokens/)
-> añadiendo la URL de GitHub Pages, o cualquiera podrá consumir tu cuota.
+> La cuenta **no tiene método de pago**, así que es un token de prueba: no admite
+> restricciones de URL ni se puede rotar. Ver «Control del gasto».
 
 ### Caída automática a los mapas de respaldo
 
 El tour **nunca se queda sin mapa**. Si Mapbox responde `401` (token inválido),
-`403` (la restricción de URL no cuadra) o `429` (límite de peticiones), o si el estilo
+`403` (cuota agotada o token no autorizado) o `429` (límite de peticiones), o si el estilo
 no llega a cargar en 12 segundos, el sitio cambia solo a MapLibre **conservando la etapa,
 el progreso y la reproducción**, y lo avisa en el panel de ajustes.
 
@@ -73,36 +73,35 @@ Sin esto, un token caducado dejaba el tour corriendo sobre un fondo gris vacío.
 
 ### Control del gasto
 
-Mapbox **no permite poner un tope de gasto** y su consumo **no se puede consultar por API**
-(la página de estadísticas tarda hasta 24 h). Superar el plan gratuito no corta el servicio:
-se factura.
+La cuenta de Mapbox **no tiene método de pago**, y eso lo determina todo. Sin tarjeta,
+Mapbox aplica [límites de prueba](https://docs.mapbox.com/accounts/guides/signup/):
 
-| Cargas al mes | Precio |
-|---|---|
-| Hasta 50.000 | Gratis |
-| 50.001 – 100.000 | 5 $ / 1.000 |
-| 100.001 – 200.000 | 4 $ / 1.000 |
+| | Sin método de pago (actual) | Con método de pago |
+|---|---|---|
+| Cargas de mapa al mes | **5.000** | 50.000 gratis, luego 5 $/1.000 |
+| Tokens | 1, sin crear, rotar ni borrar | Los que hagan falta |
+| Restricciones de URL | **No disponibles** | Sí |
+| Riesgo de factura | **Ninguno** | Sin tope de gasto posible |
 
-Una carga es **una inicialización del mapa**, con sesión de hasta 12 h: equivale a una visita.
-Moverse, hacer zoom, cambiar de tipo de mapa o repetir etapas **no suma**.
+Una carga es **una inicialización del mapa**, con sesión de hasta 12 h: equivale a una
+visita. Moverse, hacer zoom, cambiar de tipo de mapa o repetir etapas **no suma**.
 
-**Estrategia elegida: cuenta sin método de pago.** Los avisos de consumo por umbral
-exigen tener una tarjeta registrada, así que no se usan. En su lugar:
-
-- **El token está restringido por URL**, que es la protección real: con tráfico orgánico
-  no se llega a 50.000 visitas únicas al mes; la forma realista de superarlo es que alguien
-  copie el token y lo use en otra web.
-- **Sin tarjeta no hay cobro posible.** Si se superase el plan gratuito, la factura no se
-  podría procesar y Mapbox [desactivaría la cuenta](https://docs.mapbox.com/help/troubleshooting/blank-tiles/):
-  las peticiones empezarían a fallar y **el sitio caería solo a los mapas de respaldo**.
-- Revisar la página **Statistics** de la cuenta de vez en cuando (visible sin tarjeta,
-  con hasta 24 h de retraso).
+**Por qué se ha elegido así.** El objetivo era no poder gastar dinero, y sin tarjeta el
+tope lo impone Mapbox: al llegar a 5.000 avisa por consola y por correo, y el token deja
+de servir. A partir de ahí **el sitio cae solo a los mapas de respaldo** y el visitante
+sigue viendo un mapa. Nunca hay factura.
 
 > [!WARNING]
-> Esto es un cortafuegos, no un tope exacto. Mapbox sirve durante todo el periodo y solo
-> desactiva cuando falla el cobro, al cerrar la factura: el exceso se acumula igual y queda
-> como factura *Past Due* en la cuenta. La exposición máxima es el tráfico de un periodo,
-> y la desactivación afecta a toda la cuenta de Mapbox, no solo a este sitio.
+> El techo real son **5.000 visitas únicas al mes**, no 50.000. Para una campaña o una
+> newsletter eso se consume rápido, y el resto del mes se verían los mapas alternativos.
+> Además, al no poder restringir el token por URL y estar el repositorio en público,
+> cualquiera podría copiarlo y agotar la cuota. El daño está acotado (no hay cobro, solo
+> se pierde calidad de mapa), pero si el tour pasa a ser una pieza con tráfico serio,
+> toca revisar esta decisión.
+
+Si algún día se añade método de pago, Mapbox ofrece **rotar el token**: el actual dejaría
+de funcionar y habría que actualizar `js/config.js`. Ese es el momento de crear un token
+nuevo **con restricción de URL** a la dirección de Pages y usar ese.
 
 ## Estructura
 
