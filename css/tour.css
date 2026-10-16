@@ -551,6 +551,9 @@ a:hover { color: var(--graphite); }
 
 /* ---------- fin de etapa ---------- */
 
+/* La capa ocupa todo el escenario para centrar la tarjeta donde siempre,
+   pero no intercepta clics: así la barra sigue pulsable y se puede repetir
+   la etapa o saltar de día sin cerrar el cartel. */
 .end {
   position: absolute;
   inset: 0;
@@ -558,11 +561,23 @@ a:hover { color: var(--graphite); }
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(46, 46, 45, 0.28);
   padding: 24px;
   padding-bottom: 220px;
+  pointer-events: none;
+}
+/* El velo es aparte y acaba encima de la barra, para no apagar unos
+   controles que sí funcionan. */
+.end::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--bar-h, 200px) + 48px);
+  background: rgba(46, 46, 45, 0.28);
 }
 .end__card {
+  position: relative;
   width: 440px;
   max-width: 100%;
   padding: 36px;
@@ -570,13 +585,32 @@ a:hover { color: var(--graphite); }
   flex-direction: column;
   gap: 12px;
   align-items: flex-start;
+  pointer-events: auto;
 }
+.end__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--ink-100);
+  color: var(--graphite);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--dur-base) var(--ease-out);
+}
+.end__close:hover { background: var(--mist); }
 .end__eyebrow {
   font-size: var(--text-eyebrow);
   font-weight: 700;
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
   color: var(--green-sendero);
+  padding-right: 44px;   /* deja sitio al botón de cerrar */
 }
 .end__title { font-size: var(--text-h2); font-weight: 800; line-height: var(--lh-tight); }
 .end__text { font-size: var(--text-body); line-height: var(--lh-base); margin-bottom: 12px; text-wrap: pretty; }
@@ -705,7 +739,9 @@ a:hover { color: var(--graphite); }
   }
 
   .end { padding-bottom: 180px; }
+  .end::before { bottom: calc(var(--bar-h, 200px) + 46px); }
   .end__card { padding: 24px; }
+  .end__close { top: 12px; right: 12px; }
   .end__title { font-size: var(--text-h3); }
 }
 

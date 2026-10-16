@@ -58,7 +58,7 @@ class Tour {
       speedBtn: $('speedBtn'), speedVal: $('speedVal'), days: $('days'),
       bar: document.querySelector('.bar'),
       end: $('end'), endDay: $('endDay'), endKm: $('endKm'), endTitle: $('endTitle'),
-      endText: $('endText'), endBtn: $('endBtn'),
+      endText: $('endText'), endBtn: $('endBtn'), endClose: $('endClose'),
       startBtn: $('startBtn')
     };
 
@@ -130,10 +130,12 @@ class Tour {
     this.el.panelClose.addEventListener('click', () => this.togglePanel(false));
     this.el.camFollow.addEventListener('click', () => this.setCam('follow'));
     this.el.camStage.addEventListener('click', () => this.setCam('stage'));
+    this.el.endClose.addEventListener('click', () => this.closeEnd());
 
     document.addEventListener('keydown', e => {
       if (!this.state.started) return;
       if (e.key === 'Escape' && this.state.panel) { this.togglePanel(false); return; }
+      if (e.key === 'Escape' && !this.el.end.hidden) { this.closeEnd(); return; }
       if (e.code === 'Space' && !/^(BUTTON|INPUT|A)$/.test(document.activeElement.tagName)) {
         e.preventDefault();
         this.el.playBtn.click();
@@ -178,6 +180,8 @@ class Tour {
   }
 
   togglePanel(open) {
+    // El cartel de fin va por encima del panel; abrir ajustes lo descarta.
+    if (open && !this.el.end.hidden) this.closeEnd(false);
     this.state.panel = open;
     this.el.panel.hidden = !open;
     this.el.mapBtn.setAttribute('aria-expanded', String(open));
@@ -867,6 +871,14 @@ class Tour {
       this.el.endBtn.onclick = () => this.goStage(i + 1);
     }
     this.el.end.hidden = false;
+  }
+
+  /** Oculta el cartel de fin de etapa. El tour sigue en `ended`: la barra
+     queda libre para repetir la etapa o saltar a otro día. */
+  closeEnd(moveFocus = true) {
+    this.el.end.hidden = true;
+    this.syncPoi(true);
+    if (moveFocus) this.el.playBtn.focus();
   }
 }
 
