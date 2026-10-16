@@ -1,0 +1,196 @@
+/* ============================================================
+   SANTIAGO WAYS — Design Tokens
+   Source of truth: Santiago Ways · Brandbook 2027
+   (Bloque 03 Color · Bloque 04 Tipografía · Bloque 07 Aplicaciones)
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap');
+
+:root {
+  /* ----------------------------------------------------------
+     BRAND COLORS — Brandbook 2027 · ratio 50 / 30 / 10 / 7 / 3
+     Paleta cerrada: no introducir otros verdes en piezas de marca.
+     ---------------------------------------------------------- */
+  --white:         #FFFFFF;   /* Blanco · 50% — el principal, siempre. Aire y limpieza */
+  --green-ways:    #7AA606;   /* Verde Ways · 30% — principal secundario: cajas, CTA, líneas, concha */
+  --green-sendero: #506718;   /* Verde sendero · 10% — resalte: cajas oscuras y palabras clave */
+  --graphite:      #2E2E2D;   /* Grafito · 7% — texto principal */
+  --gray:          #6F6F6E;   /* Apoyo · Gris — textos secundarios */
+  --mist:          #E8E8E6;   /* Apoyo · Niebla — superficies, etiquetas, divisores */
+  --sprout:        #FAFFEE;   /* Apoyo · Brote — superficie verde muy suave */
+
+  /* Degradado — SOLO cajas de fondo verde Ways. 135°, muy sutil */
+  --green-ways-end: #628A04;
+  --gradient-box:   linear-gradient(135deg, #7AA606 0%, #628A04 100%); /* @kind color */
+
+  /* Aliases (compatibilidad) */
+  --green-primary: var(--green-ways);
+  --green-dark:    var(--green-sendero);
+  --ink:           var(--graphite);
+
+  /* ----------------------------------------------------------
+     GREEN SCALE (derivada para estados/superficies; los oficiales
+     son 600 = Verde Ways, 650 = fin de degradado, 800 = Verde sendero)
+     ---------------------------------------------------------- */
+  --green-900: #34440F;
+  --green-800: #506718;   /* = Verde sendero */
+  --green-700: #628A04;   /* = fin de degradado / hover */
+  --green-600: #7AA606;   /* = Verde Ways */
+  --green-500: #8DBA22;
+  --green-400: #A8CC52;
+  --green-300: #C6DD8C;
+  --green-200: #E0EBC2;
+  --green-100: #F1F7DD;
+  --green-50:  #FAFFEE;   /* = Brote */
+
+  /* ============================================================
+     SOCIAL MEDIA COLORS — ⚠️ SOLO INSTAGRAM · TIKTOK · FACEBOOK
+     Extensión viva para que el feed juegue con tonalidades de verde.
+     NO usar en web, app, email, documentos ni presentaciones.
+     Nota: el Brandbook 2027 cierra la paleta corporativa; estos
+     verdes son una excepción acotada a RRSS.
+     ------------------------------------------------------------ */
+  --lime:        #B2F80A;   /* Lima — pinceladas, píldoras, triángulos, palabra destacada */
+  --lime-soft:   #C9FB55;   /* Lima suave */
+  --grass:       #6CA92C;   /* Verde hierba — fondo de post */
+  --grass-dark:  #5A8F22;   /* Hierba oscuro */
+  --forest:      #164734;   /* Verde bosque — titulares, círculos de icono, texto sobre lima */
+  --forest-deep: #0E2F22;   /* Bosque profundo */
+
+  --social-bg:           var(--grass);
+  --social-bg-deep:      var(--forest);
+  --social-accent:       var(--lime);
+  --social-accent-fg:    var(--forest);
+  --social-headline:     var(--forest);
+  --social-headline-alt: var(--grass);
+  --social-on-bg:        var(--white);
+
+  /* ----------------------------------------------------------
+     NEUTRALS (escala de apoyo anclada en grafito / gris / niebla)
+     ---------------------------------------------------------- */
+  --ink-900: #2E2E2D;   /* = Grafito */
+  --ink-700: #4A4A49;
+  --ink-500: #6F6F6E;   /* = Gris */
+  --ink-400: #9A9A98;
+  --ink-300: #C9C9C6;
+  --ink-200: #E8E8E6;   /* = Niebla */
+  --ink-100: #F4F4F2;
+  --paper:   #FFFFFF;
+
+  /* Funcional (derivado, no de marca): solo avisos/errores en UI */
+  --warn:      #C8462F;
+  --warn-soft: #FBE7E2;
+
+  /* Legacy — el Brandbook 2027 elimina el CTA ámbar. No usar. */
+  --amber:      #F4B400;
+  --amber-dark: #D89A00;
+
+  /* ----------------------------------------------------------
+     SEMANTIC ROLES
+     ---------------------------------------------------------- */
+  --bg:            var(--white);
+  --bg-brand:      var(--green-ways);
+  --bg-brand-box:  var(--gradient-box);   /* cajas verde Ways con degradado */
+  --bg-dark-box:   var(--green-sendero);  /* cajas oscuras, siempre plano */
+  --bg-brand-soft: var(--sprout);
+  --surface:       var(--white);
+  --surface-mist:  var(--mist);
+
+  --fg:            var(--graphite);       /* 13,6:1 sobre blanco */
+  --fg-muted:      var(--gray);
+  --fg-accent:     var(--green-sendero);  /* titulares/palabras en verde sobre blanco · 6,4:1 */
+  --fg-on-brand:   var(--white);          /* sobre verde Ways (negrita) o sendero */
+  --fg-on-brand-muted: rgba(255,255,255,0.86);
+
+  --brand:         var(--green-ways);
+  --brand-hover:   var(--green-700);
+  --brand-press:   var(--green-800);
+
+  --cta:           var(--green-ways);     /* CTA: verde Ways plano con letra blanca */
+  --cta-fg:        var(--white);
+  --cta-on-photo:    var(--white);        /* sobre foto: blanco con letra verde */
+  --cta-on-photo-fg: var(--green-ways);
+
+  --underline:     var(--green-ways);     /* Subrayado Ways por defecto */
+  --underline-neg: var(--green-sendero);  /* Subrayado sobre caja verde Ways */
+
+  --border:        var(--mist);
+  --border-strong: var(--ink-300);
+  --ring:          color-mix(in oklab, var(--green-ways) 45%, transparent);
+
+  /* ----------------------------------------------------------
+     TYPOGRAPHY — Montserrat, una sola familia (400–800)
+     Titulares en minúscula de frase; MAYÚSCULAS solo en antetítulos
+     y etiquetas. Interlineado 1,1 titulares · 1,5 texto.
+     ---------------------------------------------------------- */
+  --font-base: "Montserrat", system-ui, sans-serif;
+  --font-head: "Montserrat", system-ui, sans-serif;
+
+  --fw-regular: 400; /* @kind font */
+  --fw-medium:  500; /* @kind font */
+  --fw-semibold:600; /* @kind font */
+  --fw-bold:    700; /* @kind font */
+  --fw-black:   800; /* @kind font */
+
+  /* Escala web (px) · print (pt) entre paréntesis */
+  --text-display: 64px;  /* 800 · 1,05  (36–48pt) */
+  --text-h1:      48px;  /* 800 · 1,1   (28pt) */
+  --text-h2:      36px;  /* 700 · 1,15  (20pt) */
+  --text-h3:      28px;  /* 700 · 1,2   (14pt) */
+  --text-h4:      22px;  /* 700 · 1,2   (12pt) */
+  --text-lead:    18px;
+  --text-body:    16px;  /* 400 · 1,5   (10–11pt) */
+  --text-small:   13px;  /* pie · 1,4   (8pt) */
+  --text-caption: 12px;  /* legal · 1,4 (7pt mín.) */
+  --text-eyebrow: 12px;  /* MAYÚSCULAS 700 · +0,15em (8pt) */
+
+  --lh-display: 1.05; /* @kind font */
+  --lh-tight:   1.1; /* @kind font */
+  --lh-snug:    1.2; /* @kind font */
+  --lh-base:    1.5; /* @kind font */
+  --lh-small:   1.4; /* @kind font */
+
+  --tracking-caps:  0.15em; /* @kind font */
+  --tracking-tight: -0.01em; /* @kind font */
+
+  /* Subrayado Ways */
+  --underline-rotate: -1.5deg; /* @kind other */
+
+  /* SPACING (8pt) */
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px; --space-9: 96px;
+
+  /* RADII */
+  --radius-sm: 8px; --radius-md: 14px; --radius-lg: 24px; --radius-xl: 32px; --radius-pill: 999px;
+
+  /* ELEVATION — Brandbook: todas las cajas, 0 8px 32px grafito 12%.
+     Botones, etiquetas y subrayados: sin sombra. */
+  --shadow-box: 0 8px 32px rgba(46,46,45,0.12);
+  --shadow-sm:  0 1px 3px rgba(46,46,45,0.08);
+  --shadow-md:  0 4px 16px rgba(46,46,45,0.10);
+  --shadow-lg:  var(--shadow-box);
+  --shadow-brand: none;
+
+  /* MOTION */
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1); /* @kind other */
+  --dur-fast: 120ms; /* @kind other */
+  --dur-base: 200ms; /* @kind other */
+  --dur-slow: 320ms; /* @kind other */
+}
+
+/* ============================================================
+   SEMANTIC TYPE CLASSES
+   ============================================================ */
+.sw-display { font-family: var(--font-head); font-weight: 800; font-size: var(--text-display); line-height: var(--lh-display); letter-spacing: var(--tracking-tight); }
+.sw-h1 { font-family: var(--font-head); font-weight: 800; font-size: var(--text-h1); line-height: var(--lh-tight); }
+.sw-h2 { font-family: var(--font-head); font-weight: 700; font-size: var(--text-h2); line-height: 1.15; }
+.sw-h3 { font-family: var(--font-head); font-weight: 700; font-size: var(--text-h3); line-height: var(--lh-snug); }
+.sw-h4 { font-family: var(--font-head); font-weight: 700; font-size: var(--text-h4); line-height: var(--lh-snug); }
+.sw-lead { font-family: var(--font-base); font-weight: 400; font-size: var(--text-lead); line-height: var(--lh-base); }
+.sw-body { font-family: var(--font-base); font-weight: 400; font-size: var(--text-body); line-height: var(--lh-base); }
+.sw-small { font-family: var(--font-base); font-weight: 400; font-size: var(--text-small); line-height: var(--lh-small); }
+.sw-caption { font-family: var(--font-base); font-weight: 400; font-size: var(--text-caption); line-height: var(--lh-small); }
+.sw-eyebrow { font-family: var(--font-head); font-weight: 700; font-size: var(--text-eyebrow); text-transform: uppercase; letter-spacing: var(--tracking-caps); }
+/* Subrayado Ways: bloque plano recto detrás de 1–2 palabras, girado -1,5° */
+.sw-underline { position: relative; display: inline-block; z-index: 0; padding: 0 .12em; }
+.sw-underline::before { content: ""; position: absolute; left: 0; right: 0; top: .12em; bottom: .02em; background: var(--underline); transform: rotate(var(--underline-rotate)); z-index: -1; }
+.sw-underline--neg::before { background: var(--underline-neg); }

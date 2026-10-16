@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tour virtual Sarria → Santiago · Santiago Ways</title>
+<meta name="description" content="Sobrevuela las cinco etapas del Camino Francés de Sarria a Santiago, día a día, antes de caminarlo.">
+<meta name="theme-color" content="#7AA606">
+<link rel="icon" href="assets/isotipo-white.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/tour.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- Herramienta de pruebas · solo con ?preview=1 -->
+  <div class="preview-bar" id="previewBar" hidden>
+    <span class="preview-bar__label">Vista previa</span>
+    <div class="preview-bar__group">
+      <button class="preview-bar__btn" id="pvDesktop" aria-pressed="true">Escritorio</button>
+      <button class="preview-bar__btn" id="pvMobile" aria-pressed="false">Móvil</button>
+    </div>
+  </div>
+
+  <div class="app__viewport">
+  <div class="stage" id="stage">
+
+    <div class="stage__map" id="map"></div>
+
+    <img class="concha" src="assets/isotipo-white.png" alt="" aria-hidden="true">
+
+    <!-- ============ PORTADA ============ -->
+    <div class="intro" id="intro">
+      <img class="intro__logo" src="assets/logo-white.png" alt="Santiago Ways">
+      <div class="intro__body">
+        <p class="intro__eyebrow">Tour virtual · Camino Francés</p>
+        <h1 class="intro__title">Recorre tu Camino <span class="sw-underline">antes de caminarlo</span></h1>
+        <p class="intro__text">
+          <span class="only-desktop">Sobrevuela las cinco etapas de Sarria a Santiago: los pueblos, puentes y paisajes que vas a vivir, día a día.</span>
+          <span class="only-mobile">Sobrevuela las cinco etapas de Sarria a Santiago, día a día.</span>
+        </p>
+        <p class="intro__facts">
+          <span>5 etapas</span><span>114 km</span>
+          <span class="only-desktop">Hoteles seleccionados</span><span class="only-mobile">Hoteles</span>
+        </p>
+        <button class="btn" id="startBtn">Empezar el tour</button>
+      </div>
+    </div>
+
+    <!-- ============ TOUR ============ -->
+    <div id="tour" hidden>
+
+      <header class="card header">
+        <img class="header__logo" src="assets/logo-horizontal.jpg" alt="Santiago Ways">
+        <div class="header__divider"></div>
+        <div class="header__text">
+          <p class="header__eyebrow"><span class="header__eyebrow-long">Tour virtual · </span>Día <span id="dayNum">1</span> de 5</p>
+          <p class="header__route"><span id="stageFrom">Sarria</span> → <span id="stageTo">Portomarín</span></p>
+        </div>
+      </header>
+
+      <button class="map-btn" id="mapBtn" aria-expanded="false" aria-controls="panel">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#506718" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+          <polyline points="2 17 12 22 22 17"></polyline>
+          <polyline points="2 12 12 17 22 12"></polyline>
+        </svg>
+        Mapa: <span id="mapName">Satélite con nombres</span>
+      </button>
+
+      <!-- Panel de ajustes -->
+      <section class="card panel" id="panel" hidden aria-label="Ajustes del mapa">
+        <div class="panel__head">
+          <h2 class="panel__title">Ajustes del mapa</h2>
+          <button class="panel__close" id="panelClose" aria-label="Cerrar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+              <line x1="6" y1="6" x2="18" y2="18"></line><line x1="18" y1="6" x2="6" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+
+        <div class="panel__group">
+          <h3 class="panel__label">Cámara</h3>
+          <div class="seg">
+            <button class="seg__btn" id="camFollow" aria-pressed="true">Seguir el Camino</button>
+            <button class="seg__btn" id="camStage" aria-pressed="false">Etapa completa</button>
+          </div>
+          <p class="panel__hint">Con «Etapa completa», el mapa se queda quieto y solo avanza el punto verde.</p>
+        </div>
+
+        <div class="panel__group">
+          <h3 class="panel__label">Tipo de mapa</h3>
+          <p class="panel__note" id="noTokenNote" hidden>
+            <strong>Mapbox desactivado.</strong> Pega tu token público (empieza por «pk.») en <code>js/config.js</code>
+            o añade <code>?token=pk.…</code> a la URL. Mientras tanto se usan mapas de prueba.
+          </p>
+          <p class="panel__hint" id="mbNote" hidden>Mapas de Mapbox · 50.000 cargas gratis al mes.</p>
+          <div id="mapList"></div>
+        </div>
+      </section>
+
+      <!-- Ficha de punto de interés -->
+      <aside class="card poi" id="poi" hidden>
+        <div class="poi__img" id="poiImg" role="img" aria-label=""></div>
+        <div class="poi__body">
+          <p class="poi__eyebrow">En tu Camino · km <span id="poiKm">0,0</span></p>
+          <h2 class="poi__title" id="poiTitle"></h2>
+          <p class="poi__text" id="poiText"></p>
+        </div>
+      </aside>
+
+      <!-- Barra inferior -->
+      <div class="card bar">
+        <div class="bar__row">
+
+          <button class="play" id="playBtn" aria-label="Reproducir">
+            <svg id="iconPlay" width="26" height="26" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="7 4 20 12 7 20 7 4"></polygon>
+            </svg>
+            <svg id="iconPause" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true" hidden>
+              <line x1="8" y1="5" x2="8" y2="19"></line><line x1="16" y1="5" x2="16" y2="19"></line>
+            </svg>
+          </button>
+
+          <div class="stats">
+            <p class="stats__km">
+              <span class="stats__km-big"><span id="kmDone">0,0</span><span>km</span></span>
+              <span class="stats__km-total">de <span id="kmTotal">22,2</span></span>
+            </p>
+            <p class="stats__up">Desnivel + <strong id="upDone">0</strong> m <span>de <span id="upTotal">0</span> m</span></p>
+          </div>
+
+          <div class="profile">
+            <div class="profile__inner">
+              <div class="profile__scale" aria-hidden="true">
+                <span style="top:17.5%">700 m</span>
+                <span style="top:56%">450 m</span>
+                <span style="top:94%">200 m</span>
+              </div>
+              <div class="profile__plot">
+                <svg class="profile__svg" width="100%" height="100%" viewBox="0 0 600 72" preserveAspectRatio="none" aria-hidden="true">
+                  <defs><clipPath id="swDone"><rect id="clipRect" x="0" y="0" width="0" height="72"></rect></clipPath></defs>
+                  <line x1="0" y1="12.6" x2="600" y2="12.6" stroke="#E8E8E6" stroke-width="1" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"></line>
+                  <line x1="0" y1="40.3" x2="600" y2="40.3" stroke="#E8E8E6" stroke-width="1" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"></line>
+                  <path id="profArea" d="" fill="#E8E8E6"></path>
+                  <path id="profAreaDone" d="" fill="#C6DD8C" clip-path="url(#swDone)"></path>
+                  <path id="profLine" d="" fill="none" stroke="#7AA606" stroke-width="2.5" vector-effect="non-scaling-stroke" clip-path="url(#swDone)"></path>
+                  <line id="profCursor" x1="0" y1="0" x2="0" y2="72" stroke="#506718" stroke-width="2" vector-effect="non-scaling-stroke"></line>
+                </svg>
+                <div class="profile__bubble" id="eleBubble"><span id="eleNow">450</span> m</div>
+              </div>
+            </div>
+          </div>
+
+          <button class="speed" id="speedBtn"><span class="speed__long">Velocidad </span><span id="speedVal">1x</span></button>
+        </div>
+
+        <div class="days" id="days"></div>
+      </div>
+
+      <!-- Fin de etapa -->
+      <div class="end" id="end" hidden>
+        <div class="card end__card">
+          <p class="end__eyebrow">Día <span id="endDay">1</span> completado · <span id="endKm">22,2</span> km</p>
+          <h2 class="end__title" id="endTitle"></h2>
+          <p class="end__text" id="endText"></p>
+          <button class="btn" id="endBtn"></button>
+        </div>
+      </div>
+
+    </div><!-- /#tour -->
+
+  </div><!-- /.stage -->
+  </div>
+
+</div>
+
+<script type="module" src="js/tour.js"></script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+# Dependencias (el proyecto no las necesita, pero npx/serve pueden dejarlas)
+node_modules/
+package-lock.json
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+*.swp
+
+# Logs y temporales
+*.log
+npm-debug.log*
+.cache/
+tmp/
