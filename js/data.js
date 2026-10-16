@@ -2,7 +2,9 @@
    Waypoints, etapas y puntos de interés, más la geometría derivada.
    Altitudes y trazado son APROXIMADOS: sustituir por GPX reales cuando existan. */
 
-import { CONFIG } from './config.js';
+/* Mismo ?v= que en index.html y tour.js: si no coincide, el navegador
+   cargaría dos instancias distintas del módulo de configuración. */
+import { CONFIG } from './config.js?v=2';
 
 /* [nombre, lat, lng, altitud m] */
 export const WP = [

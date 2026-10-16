@@ -2,11 +2,12 @@
    Reimplementación en JS limpio de la lógica del prototipo (clase Component).
    Sin framework: estado propio + actualización directa del DOM. */
 
-import { CONFIG, PREVIEW } from './config.js';
+/* El ?v= debe coincidir con el de index.html: ver la nota de caché de allí. */
+import { CONFIG, PREVIEW } from './config.js?v=2';
 import {
   DATA, WP, STAGES, MAPS, MB_MAPS, MB_JS, MB_CSS, ML_JS, ML_CSS,
   bearing, rad, fmt
-} from './data.js';
+} from './data.js?v=2';
 
 const $ = id => document.getElementById(id);
 

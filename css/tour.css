@@ -587,30 +587,37 @@ a:hover { color: var(--graphite); }
   align-items: flex-start;
   pointer-events: auto;
 }
+/* Sin círculo gris de serie: una aspa fina que solo se apoya en un fondo
+   suave al pasar por encima. El área de pulsación sigue siendo de 44 px. */
 .end__close {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 20px;
+  right: 20px;
   width: 44px;
   height: 44px;
   border: none;
   border-radius: var(--radius-pill);
-  background: var(--ink-100);
-  color: var(--graphite);
+  background: transparent;
+  color: var(--gray);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background var(--dur-base) var(--ease-out);
+  transition: background var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
 }
-.end__close:hover { background: var(--mist); }
+.end__close:hover { background: var(--ink-100); color: var(--graphite); }
+.end__close:active { background: var(--mist); }
+.end__close:focus-visible { outline: 2px solid var(--green-ways); outline-offset: 2px; }
+/* El aspa no debe ser el objetivo del clic: con trazos finos, pulsar «entre»
+   las líneas haría que el objetivo fuese el SVG y no el botón. */
+.end__close svg { pointer-events: none; }
 .end__eyebrow {
   font-size: var(--text-eyebrow);
   font-weight: 700;
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
   color: var(--green-sendero);
-  padding-right: 44px;   /* deja sitio al botón de cerrar */
+  padding-right: 52px;   /* deja sitio al botón de cerrar */
 }
 .end__title { font-size: var(--text-h2); font-weight: 800; line-height: var(--lh-tight); }
 .end__text { font-size: var(--text-body); line-height: var(--lh-base); margin-bottom: 12px; text-wrap: pretty; }
@@ -741,7 +748,9 @@ a:hover { color: var(--graphite); }
   .end { padding-bottom: 180px; }
   .end::before { bottom: calc(var(--bar-h, 200px) + 46px); }
   .end__card { padding: 24px; }
-  .end__close { top: 12px; right: 12px; }
+  .end__close { top: 10px; right: 10px; }
+  /* Medido: con más de 44 px el antetítulo parte «KM» a una segunda línea. */
+  .end__eyebrow { padding-right: 44px; }
   .end__title { font-size: var(--text-h3); }
 }
 
